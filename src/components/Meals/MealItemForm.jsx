@@ -2,8 +2,11 @@ import classes from './MealItemForm.module.css'
 import Input from '../UI/Input'
 import { useContext } from 'react'
 import CardContext from '../../store/cart-context'
-const MealItemForm = (props) => {
+const MealItemForm = ({ data, id }) => {
 	const { onAdd } = useContext(CardContext)
+	const onAddHandler = (data) => {
+		return () => onAdd(data)
+	}
 	const submitHandler = (e) => {
 		e.preventDefault()
 	}
@@ -12,7 +15,7 @@ const MealItemForm = (props) => {
 			<Input
 				label='amount'
 				input={{
-					id: 'amount_' + props.id,
+					id: 'amount_' + id,
 					type: 'number',
 					min: '1',
 					max: '5',
@@ -20,7 +23,7 @@ const MealItemForm = (props) => {
 					defaultValue: '1',
 				}}
 			/>
-			<button onClick={onAdd.bind(null, props.data)}> + Add</button>
+			<button onClick={onAddHandler(data)}> + Add</button>
 		</form>
 	)
 }
