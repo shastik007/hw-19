@@ -1,6 +1,5 @@
-import { Fragment, useContext, useState, useEffect } from 'react'
+import { Fragment } from 'react'
 import mealsImage from '../../assets/meals.jpg'
-import CardContext from '../../store/cart-context'
 import classes from './Header.module.css'
 import HeaderCartButton from './HeaderCartButton'
 const Header = (props) => {

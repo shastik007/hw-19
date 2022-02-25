@@ -7,7 +7,11 @@ const MealItemForm = ({ data, id }) => {
 	const ctxData = useContext(CardContext)
 
 	const onChangeHandler = (e) => {
-		setInput(e.target.value)
+		if (e.target.value > 0 && e.target.value <= 5) {
+			setInput(e.target.value)
+		} else {
+			setInput((prev)=>prev)
+		}
 	}
 
 	const onAddHandler = (data) => {
