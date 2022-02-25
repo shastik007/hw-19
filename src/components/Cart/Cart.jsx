@@ -7,12 +7,16 @@ import CardContext from '../../store/cart-context'
 
 const Cart = (props) => {
 	const cartData = useContext(CardContext)
+	const totalPriceToFixed = cartData.totalPrice.toFixed(2)
 	const cartItems = cartData.items.map((el) => (
 		<CartItem
 			key={el.id}
 			name={el.name}
 			amount={el.amount}
 			price={el.price}
+			item={el}
+			onAdd={cartData.onAdd.bind(null,el)}
+			onRemove={cartData.onRemove.bind(null,el.id)}
 		/>
 	))
 	const { onClose } = useContext(modalContext)
@@ -21,7 +25,7 @@ const Cart = (props) => {
 			{cartItems}
 			<div className={classes.total}>
 				<span>Total Amoutn</span>
-				<span>{cartData.totalAmount}</span>
+				<span>{totalPriceToFixed}</span>
 			</div>
 			<div className={classes.actions}>
 				<button onClick={onClose} className={classes['button--alt']}>

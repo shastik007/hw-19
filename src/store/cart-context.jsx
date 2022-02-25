@@ -5,7 +5,7 @@ const CardContext = React.createContext()
 
 const intitState = {
 	items: [],
-	totalAmount: 0,
+	totalPrice: 0,
 }
 
 const cartReducer = (state, action) => {
@@ -17,26 +17,50 @@ const cartReducer = (state, action) => {
 			if (currentIndex == -1) {
 				let newItem = { ...action.item, amount: 1 }
 				const newItems = state.items.concat(newItem)
-				const newAmount = state.totalAmount + 1
+				const newPrice = state.totalPrice + action.item.price
 
 				return {
 					...state,
 					items: newItems,
-					totalAmount: newAmount,
+					totalPrice: newPrice,
 				}
 			} else {
 				let currentElement = state.items[currentIndex]
 				let newItems = state.items.map((el, index) => {
 					return index === currentIndex
-						? { ...el, amount: el.amount + 1 }
+						? { ...el, amount: ++el.amount }
 						: el
 				})
-				const newAmount = state.totalAmount + 1
+				const newPrice = state.totalPrice + action.item.price
 
 				return {
 					...state,
 					items: newItems,
-					totalAmount: newAmount,
+					totalPrice: newPrice,
+				}
+			}
+		case REMOVE:
+			let currentElement = state.items.find((el) => el.id == action.id)
+			if (currentElement.amount === 1) {
+				let newItems = state.items.filter((el) => el.id !== action.id)
+				let newPrice = state.totalPrice - currentElement.price
+				return {
+					...state,
+					items: newItems,
+					totalPrice:newPrice,
+				}
+			} else {
+				let newItems = state.items.map(el => {
+					return el.id === action.id
+						? { ...el, amount: --el.amount}
+						: el
+				})
+				const newPrice = state.totalPrice - currentElement.price
+
+				return {
+					...state,
+					items: newItems,
+					totalPrice: newPrice,
 				}
 			}
 
@@ -50,12 +74,14 @@ export const CardContextProvider = (props) => {
 	const onAddHandler = (item) => {
 		dispatch({ type: ADD, item })
 	}
-	const onRemoveHandler = (id) => {}
+	const onRemoveHandler = (id) => {
+		dispatch({ type: REMOVE, id })
+	}
 	return (
 		<CardContext.Provider
 			value={{
 				items: state.items,
-				totalAmount: state.totalAmount,
+				totalPrice: state.totalPrice,
 				onAdd: onAddHandler,
 				onRemove: onRemoveHandler,
 			}}
