@@ -11,13 +11,33 @@ const intitState = {
 const cartReducer = (state, action) => {
 	switch (action.type) {
 		case 'ADD':
-			const newItems = state.items.concat(action.item)
-			const newAmount = state.totalAmount + 1
+			let currentIndex = state.items.findIndex(
+				(el) => el.id == action.item.id,
+			)
+			if (currentIndex == -1) {
+				let newItem = { ...action.item, amount: 1 }
+				const newItems = state.items.concat(newItem)
+				const newAmount = state.totalAmount + 1
 
-			return {
-				...state,
-				items: newItems,
-				totalAmount: newAmount,
+				return {
+					...state,
+					items: newItems,
+					totalAmount: newAmount,
+				}
+			} else {
+				let currentElement = state.items[currentIndex]
+				let newItems = state.items.map((el, index) => {
+					return index === currentIndex
+						? { ...el, amount: el.amount + 1 }
+						: el
+				})
+				const newAmount = state.totalAmount + 1
+
+				return {
+					...state,
+					items: newItems,
+					totalAmount: newAmount,
+				}
 			}
 
 		default:
