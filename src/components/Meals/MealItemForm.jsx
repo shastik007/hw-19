@@ -1,15 +1,20 @@
 import classes from './MealItemForm.module.css'
 import Input from '../UI/Input'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import CardContext from '../../store/cart-context'
 const MealItemForm = ({ data, id }) => {
+	const [input,setInput] = useState(1)
 	const ctxData = useContext(CardContext)
+    
+	const onChangeHandler = (e) =>{
+		setInput(e.target.value)
+	}
+
 	const onAddHandler = (data) => {
-		return () => ctxData.onAdd(data)
+		let amount  = Number(input)
+		return () => ctxData.onAdd(data,amount)
 	}
-	const onChangeInput = (e) => {
-		ctxData.setInput(e.target.value)
-	}
+	
 	const submitHandler = (e) => {
 		e.preventDefault()
 	}
@@ -17,7 +22,7 @@ const MealItemForm = ({ data, id }) => {
 		<form onSubmit={submitHandler} className={classes.form}>
 			<Input
 				label='amount'
-				onchange={onChangeInput}
+				onchange={onChangeHandler}
 				input={{
 					id: 'amount_' + id,
 					type: 'number',

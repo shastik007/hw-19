@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from 'react'
-import { ADD, REMOVE } from '../helpers/constants'
+import { ADD, REMOVE, BULKADD } from '../helpers/constants'
 
 const CardContext = React.createContext()
 
@@ -39,6 +39,37 @@ const cartReducer = (state, action) => {
 					totalPrice: newPrice,
 				}
 			}
+
+		case BULKADD:
+			let currentIndexx = state.items.findIndex(
+				(el) => el.id == action.item.id,
+			)
+			if (currentIndexx !== -1) {
+				let newItems = state.items.map((el, index) => {
+					return index === currentIndexx
+						? { ...el, amount: state.items[currentIndexx].amount + action.amount }
+						: el
+				})
+				const newPrice =
+					state.totalPrice + action.item.price * action.amount
+
+				return {
+					...state,
+					items: newItems,
+					totalPrice: newPrice,
+				}
+			}else{
+				let newItem = { ...action.item, amount: action.amount }
+				const newItems = state.items.concat(newItem)
+				const newPrice = state.totalPrice + (action.item.price * action.amount)
+
+				return {
+					...state,
+					items: newItems,
+					totalPrice: newPrice,
+				}
+			}
+
 		case REMOVE:
 			let currentElement = state.items.find((el) => el.id == action.id)
 			if (currentElement.amount === 1) {
@@ -47,12 +78,12 @@ const cartReducer = (state, action) => {
 				return {
 					...state,
 					items: newItems,
-					totalPrice:newPrice,
+					totalPrice: newPrice,
 				}
 			} else {
-				let newItems = state.items.map(el => {
+				let newItems = state.items.map((el) => {
 					return el.id === action.id
-						? { ...el, amount: --el.amount}
+						? { ...el, amount: --el.amount }
 						: el
 				})
 				const newPrice = state.totalPrice - currentElement.price
@@ -71,10 +102,13 @@ const cartReducer = (state, action) => {
 
 export const CardContextProvider = (props) => {
 	const [state, dispatch] = useReducer(cartReducer, intitState)
-	const [inputState,setInputState] = useState(1)
-	console.log(inputState);
-	const onAddHandler = (item) => {
-		dispatch({ type: ADD, item })
+
+	const onAddHandler = (item, amount) => {
+		if (amount > 1) {
+			dispatch({ type: BULKADD, item, amount })
+		} else {
+			dispatch({ type: ADD, item })
+		}
 	}
 	const onRemoveHandler = (id) => {
 		dispatch({ type: REMOVE, id })
@@ -86,8 +120,6 @@ export const CardContextProvider = (props) => {
 				totalPrice: state.totalPrice,
 				onAdd: onAddHandler,
 				onRemove: onRemoveHandler,
-				inputState,
-				setInput:setInputState,
 			}}
 		>
 			{props.children}
