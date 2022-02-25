@@ -25,8 +25,7 @@ const cartReducer = (state, action) => {
 					totalPrice: newPrice,
 				}
 			} else {
-				let currentElement = state.items[currentIndex]
-				let newItems = state.items.map((el, index) => {
+ 				   let newItems = state.items.map((el, index) => {
 					return index === currentIndex
 						? { ...el, amount: ++el.amount }
 						: el
@@ -83,7 +82,7 @@ const cartReducer = (state, action) => {
 			} else {
 				let newItems = state.items.map((el) => {
 					return el.id === action.id
-						? { ...el, amount: --el.amount }
+						? { ...el, amount: --el.amount}
 						: el
 				})
 				const newPrice = state.totalPrice - currentElement.price
