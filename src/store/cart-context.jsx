@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useState } from 'react'
 import { ADD, REMOVE } from '../helpers/constants'
 
 const CardContext = React.createContext()
@@ -71,6 +71,8 @@ const cartReducer = (state, action) => {
 
 export const CardContextProvider = (props) => {
 	const [state, dispatch] = useReducer(cartReducer, intitState)
+	const [inputState,setInputState] = useState(1)
+	console.log(inputState);
 	const onAddHandler = (item) => {
 		dispatch({ type: ADD, item })
 	}
@@ -84,6 +86,8 @@ export const CardContextProvider = (props) => {
 				totalPrice: state.totalPrice,
 				onAdd: onAddHandler,
 				onRemove: onRemoveHandler,
+				inputState,
+				setInput:setInputState,
 			}}
 		>
 			{props.children}
